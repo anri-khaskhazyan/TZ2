@@ -35,11 +35,10 @@ jobs:
     - name: Parse test results
       id: parse
       run: |
-        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
         {
-          echo 'TESTS_OUTPUT<<$EOF'
+          echo 'TESTS_OUTPUT<<EOF'
           cat target/surefire-reports/*.txt)
-          echo $EOF
+          echo EOF
         } >> "$GITHUB_OUTPUT"
 
     - name: send telegram message on push
