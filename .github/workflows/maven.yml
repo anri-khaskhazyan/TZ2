@@ -31,7 +31,7 @@ jobs:
     - name: Run tests
       id: tests
       run: mvn clean test --file pom.xml surefire-report:report
-
+    
     - name: Parse test results
       id: parse
       run: |
@@ -40,21 +40,20 @@ jobs:
           cat target/surefire-reports/*.txt
           echo EOF
         } >> "$GITHUB_OUTPUT"
-
+     
     - name: send telegram message on push
-      if: steps.parse.outputs.failed_tests == 0
+      if: steps.tests.conclusion == "success"
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: все ок
+    
+    - name: send telegram message on failure
+      if: steps.tests.conclusion == "failure"
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: ${{ steps.parse.outputs.TESTS_OUTPUT }}
-    
-    - name: send telegram message on failure
-      if: steps.parse.outputs.failed_tests > 0
-      uses: appleboy/telegram-action@master
-      with:
-        to: ${{ secrets.TELEGRAM_TO }}
-        token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: |
-          {{ steps.parse.outputs.failed_tests }}
       
