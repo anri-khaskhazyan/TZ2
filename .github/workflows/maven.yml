@@ -36,7 +36,7 @@ jobs:
       id: parse
       run: |
         tests_output=$(cat target/surefire-reports/*.txt)
-        echo "::set-output name=tests_output::$tests_output"
+        echo "tests_output=$tests_output" >> "$GITHUB_OUTPUT"
 
     - name: send telegram message on push
       if: steps.parse.outputs.failed_tests == 0
