@@ -35,8 +35,12 @@ jobs:
     - name: Parse test results
       id: parse
       run: |
-        tests_output="$(cat target/surefire-reports/*.txt)"
-        echo "TESTS_OUTPUT=$tests_output" >> "$GITHUB_OUTPUT"
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        {
+          echo 'TESTS_OUTPUT<<$EOF'
+          cat target/surefire-reports/*.txt)
+          echo $EOF
+        } >> "$GITHUB_OUTPUT"
 
     - name: send telegram message on push
       if: steps.parse.outputs.failed_tests == 0
