@@ -29,19 +29,30 @@ jobs:
       run: mvn -B package --file pom.xml
       
     - name: Run tests
-      run: mvn test --file pom.xml
+      id: tests
+      run: mvn test --file pom.xml surefire-report:report
+
+    - name: Parse test results
+      id: parse
+      run: |
+        failed_tests=$(xmllint --xpath "count(//testcase/failure)" target/site/surefire-report/*.xml)
+        echo "::set-output name=failed_tests::$failed_tests"
 
     - name: send telegram message on push
-      if: success()
+      if: always() && success()
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          ${{ github.actor }} created commit:
-          Commit message: ${{ github.event.commits[0].message }}
-          
-          Repository: ${{ github.repository }}
-          
-          See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
-        
+          Все ок
+    
+    - name: send telegram message on failure
+      if: always() && failure()
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: |
+          {{ steps.parse.outputs.failed_tests }}
+      
