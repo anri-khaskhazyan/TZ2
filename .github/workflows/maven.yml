@@ -35,11 +35,11 @@ jobs:
     - name: Parse test results
       id: parse
       run: |
-        failed_tests=$(xmllint --xpath "count(//testcase/failure)" target/site/surefire-report/*.xml)
+        failed_tests=$(grep -c "<failure" target/site/surefire-report/*.xml || true)
         echo "::set-output name=failed_tests::$failed_tests"
 
     - name: send telegram message on push
-      if: always() && success()
+      if: steps.parse.outputs.failed_tests == 0
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
@@ -48,7 +48,7 @@ jobs:
           Все ок
     
     - name: send telegram message on failure
-      if: always() && failure()
+      if: steps.parse.outputs.failed_tests > 0
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
