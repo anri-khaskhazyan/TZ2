@@ -37,7 +37,7 @@ jobs:
       run: |
         {
           echo 'TESTS_OUTPUT<<EOF'
-          cat target/surefire-reports/*.txt)
+          cat target/surefire-reports/*.txt
           echo EOF
         } >> "$GITHUB_OUTPUT"
 
