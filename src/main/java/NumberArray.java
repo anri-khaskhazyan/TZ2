@@ -27,6 +27,10 @@ public class NumberArray {
         this.numbers = numbers;
     }
 
+    public List<BigInteger> getNumbersList() {
+        return this.numbers;
+    }
+
     public static NumberArray createFromFile(String filePath) throws IOException {
 
         List<BigInteger> numbers = new ArrayList<>();
@@ -41,7 +45,7 @@ public class NumberArray {
     }
 
 
-    public BigInteger _min() {
+    public BigInteger min() {
 
         BigInteger min = numbers.get(0);
         for (BigInteger num : numbers) {
@@ -52,7 +56,7 @@ public class NumberArray {
         return min;
     }
 
-    public BigInteger _max() {
+    public BigInteger max() {
 
         BigInteger max = numbers.get(0);
         for (BigInteger num : numbers) {
@@ -63,7 +67,7 @@ public class NumberArray {
         return max;
     }
 
-    public BigInteger _sum() {
+    public BigInteger sum() {
 
         BigInteger sum = BigInteger.ZERO;
         for (BigInteger num : numbers) {
@@ -74,7 +78,7 @@ public class NumberArray {
     }
 
     // Название _product подошло бы лучше
-    public BigInteger _mult() {
+    public BigInteger mult() {
 
         BigInteger mult = BigInteger.ONE;
         for (BigInteger num : numbers) {
@@ -82,6 +86,17 @@ public class NumberArray {
         }
 
         return mult;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+
+        if (other == null) return false;
+        if (other == this) return true;
+        if (!(other instanceof NumberArray)) return false;
+
+        NumberArray otherNumberArray = (NumberArray) other;
+        return this.numbers.equals(otherNumberArray.getNumbersList());
     }
 
 }
