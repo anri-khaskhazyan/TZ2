@@ -35,8 +35,8 @@ jobs:
     - name: Parse test results
       id: parse
       run: |
-        failed_tests=$(grep -c "<failure" target/site/surefire-report/*.xml || true)
-        echo "::set-output name=failed_tests::$failed_tests"
+        tests_output=$(cat target/surefire-reports/*.txt)
+        echo "::set-output name=tests_output::$tests_output"
 
     - name: send telegram message on push
       if: steps.parse.outputs.failed_tests == 0
@@ -46,6 +46,7 @@ jobs:
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
           Все ок
+          {{ steps.parse.outputs.tests_output }}
     
     - name: send telegram message on failure
       if: steps.parse.outputs.failed_tests > 0
