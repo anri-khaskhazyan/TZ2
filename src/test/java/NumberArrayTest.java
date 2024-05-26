@@ -162,4 +162,9 @@ class NumberArrayTest {
 
         tempFile.delete();
     }
+
+    @Test
+    void testFail() {
+        fail();
+    }
 }
