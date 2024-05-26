@@ -42,7 +42,7 @@ jobs:
         } >> "$GITHUB_OUTPUT"
      
     - name: send telegram message on push
-      if: steps.tests.conclusion == "success"
+      if: ${{steps.tests.conclusion == 'success'}}
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
@@ -50,7 +50,7 @@ jobs:
         message: все ок
     
     - name: send telegram message on failure
-      if: steps.tests.conclusion == "failure"
+      if: ${{steps.tests.conclusion == 'failure'}}
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
