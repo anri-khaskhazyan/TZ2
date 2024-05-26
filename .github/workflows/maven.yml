@@ -44,9 +44,7 @@ jobs:
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: |
-          Все ок
-          {{ steps.parse.outputs.tests_output }}
+        message: ${{ steps.parse.outputs.tests_output }}
     
     - name: send telegram message on failure
       if: steps.parse.outputs.failed_tests > 0
