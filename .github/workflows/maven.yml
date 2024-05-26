@@ -49,5 +49,5 @@ jobs:
         message: ${{ steps.parse.outputs.TESTS_OUTPUT }}
 
     - name: fail on tests failure
-      if: ${{steps.tests.outcome == 'failure'}}
+      if: ${{steps.buildMaven.outcome == 'failure'}}
       run: exit 1
