@@ -18,13 +18,10 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
+      id: buildMaven
+      continue-on-error: true
       run: |
         mvn -B package --file pom.xml
-
-    - name: Run tests
-      id: tests
-      continue-on-error: true
-      run: mvn clean test --file pom.xml surefire-report:report
 
     - name: Parse test results
       id: parse
@@ -36,7 +33,7 @@ jobs:
         } >> "$GITHUB_OUTPUT"
 
     - name: send telegram message on push
-      if: ${{steps.tests.outcome == 'success'}}
+      if: ${{steps.buildMaven.outcome == 'success'}}
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
@@ -44,7 +41,7 @@ jobs:
         message: все ок
 
     - name: send telegram message on failure
-      if: ${{steps.tests.outcome == 'failure'}}
+      if: ${{steps.buildMaven.outcome == 'failure'}}
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
