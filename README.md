@@ -33,34 +33,41 @@ Mult: 1307674368000
 ```
 
 ## Тест скорости работы
-![testGraph](testGraph.png)
-В примере была протестирована функция `_sum()`. Ось Y - количество элементов массива. По оси X - время выполнения в миллисекундах. Наглядно видно что программа выполняется за время O(n).
+![test1](https://github.com/anri-khaskhazyan/TZ2/assets/167525866/1e2e0d9f-fb79-4735-a74a-120e06d4af2b)
+
+В примере была протестирована функция `sum()`. Ось Y - время выполнения в миллисекундах. По оси X - количество элементов массива. Наглядно видно что программа выполняется за время O(n).
 
 Для получения результата использовался следующий код:
 
 ```java
-
 int testsCount = 500;
+int oneTestRepetitions = 100;
 int multiplier = 1000;
 long seed = 404187099;
 
+System.out.println("n, O");
 for (int i = 1; i < testsCount; i++) {
 
     File tempFile = File.createTempFile("numbers", ".txt");
     BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
-    
+
     long[] randomNumbers = LongStream.generate(() -> new Random(seed).nextLong()).limit(i * multiplier).toArray();
     writer.write(Arrays.toString(randomNumbers).replaceAll("[\\[\\],]", ""));
     writer.close();
-    
-    long startTime = System.nanoTime();
+
     NumberArray numberArray = NumberArray.createFromFile(tempFile.getPath());
-    BigInteger sum = numberArray._sum();
-    long endTime = System.nanoTime();
-    
-    
-    System.out.println((endTime - startTime) / 1000));
-    
+
+    long sumTime = 0;
+    for (int j = 0; j < oneTestRepetitions; j++) {
+        long startTime = System.nanoTime();
+        numberArray.sum();
+        long endTime = System.nanoTime();
+        sumTime += (endTime - startTime) / 1000;
+    }
+
+    long avg = sumTime / oneTestRepetitions;
+    System.out.println(randomNumbers.length + "," + avg);
+
     tempFile.delete();
 }
 
